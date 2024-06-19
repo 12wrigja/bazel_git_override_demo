@@ -1,0 +1,26 @@
+###############################################################################
+# Bazel now uses Bzlmod by default to manage external dependencies.
+# Please consider migrating your external dependencies from WORKSPACE to MODULE.bazel.
+#
+# For more details, please check https://github.com/bazelbuild/bazel/issues/18958
+#
+# To find more dependencies, try the central registry: https://registry.bazel.build/
+#
+###############################################################################
+
+bazel_dep(name = "rules_apko", version = "1.2.3")
+git_override(
+    module_name  = "rules_apko",
+    remote = "https://github.com/chainguard-dev/rules_apko",
+    commit = "b097884460969fc5852d7f29c7c4c1a4d5651c29",
+)
+
+apko = use_extension(
+    "@rules_apko//apko:extensions.bzl",
+    "apko",
+)
+apko.translate_lock(
+    name = "ddclient_apk_image",
+    lock = "//:ddclient_apko_image_config.lock.json",
+)
+use_repo(apko, "ddclient_apk_image")
